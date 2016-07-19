@@ -124,7 +124,7 @@ Below you can find an example of what the instructors' final product looks like.
 #### Project Feedback + Evaluation
 
 
-Base on the requirements you can earn a maximum of 24 requirement points and 3 bonus points on this project. Your instructors will score each of your technical requirements using the scale below:
+Base on the requirements you can earn a maximum of 24 requirement points  and 3 bonus points on this project. Your instructors will score each of your technical requirements using the scale below:
 
     Score | Expectations
     ----- | ------------
@@ -134,3 +134,48 @@ Base on the requirements you can earn a maximum of 24 requirement points and 3 b
     **3** | _Exceeds expectations, you wonderful creature, you!_
 
 This will serve as a helpful overall gauge of whether you met the project goals, but __the more important scores are the individual ones__ above, which can help you identify where to focus your efforts for the next project!
+
+---
+
+#### User Stories
+
+1.
+The first thing a user should see is a landing page with a list of item
+types and directory tabs.
+
+Tests:
+
+The user can open the history and open dialog view and close said view
+The user can open the other tabs and enter their activities or open their
+dialog boxes.
+
+User Story 1: The user can view landing page and interact with home buttons
+as a user, I can check shopping cart for saved items in dialog box
+as a user, I can navigate to an activity of a type of item
+as a user, I can view a history of purchased items
+
+2.
+A singleton class must be made that contains both the array of available 
+item objects and another of items in the shopping cart. This should be available in 
+each class
+
+Test:
+user can add to shopping cart, if singleton instance exists
+user can delete from shopping cart, if arraylist in singleton != null
+
+User Story 2: The user can interact with shopping cart
+as a user, I can buy an item and have it added to the shopping cart
+as a user, I can delete an item from inside the shopping cart
+as a user, I ccan empty the entire shopping cart at once by deletion
+as a user, I can empty the entire shopping cart at once by buying them all
+as a user, I can buy a single item in the shopping cart
+
+3.
+The user must be able to search in both the list activity and the items activities
+
+Test:
+user can search for items if items array list > 0
+user can search for items with any symbol without breaking the code
+
+User Story 3: The user can search for items
+as a user, I can search for items or lists of items
