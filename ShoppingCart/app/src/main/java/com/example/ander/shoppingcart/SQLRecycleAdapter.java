@@ -20,24 +20,17 @@ public class SQLRecycleAdapter extends RecyclerView.Adapter<RecViewHolder> {
         mitemXML = itemLayout;
     }
 
-//    List<ItemObject> mitemObjects;
-//    Context mContext;
-//
-//    public SQLRecycleAdapter(Context context, List<ItemObject> objectInput) {
-//        mitemObjects = objectInput;
-//        mContext = context;
-//    }
-
-
     @Override
     public RecViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // get the layout inflater from the parent
+
+//          get the layout inflater from the parent
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        // inflate to each view
+//          inflate to each row with the information from the viewholder
         View view = inflater.inflate(R.layout.recycle_view_items, parent, false);
-        // associate each Recycler View Holder to an individual view
+//          associate each Recycler View Holder to an individual view
         RecViewHolder recViewHolder = new RecViewHolder(view);
-        // return the view's instantiation
+
+//          return the view's instantiation
         return recViewHolder;
     }
 
@@ -61,6 +54,7 @@ public class SQLRecycleAdapter extends RecyclerView.Adapter<RecViewHolder> {
             @Override
             public void onClick(View view) {
                 Toast.makeText(view.getContext(), "You clicked a tab", Toast.LENGTH_SHORT).show();
+//                String name =
             }
         });
 

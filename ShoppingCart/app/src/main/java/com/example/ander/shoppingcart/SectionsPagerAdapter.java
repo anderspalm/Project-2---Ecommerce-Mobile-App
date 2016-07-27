@@ -23,7 +23,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
 
     public Fragment getInstance(int position) {
@@ -34,10 +34,12 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         switch (position) {
             default:
             case 0:
-                return "Knights Bridge";
+                return "Battersea";
             case 1:
                 return "Chelsea";
             case 2:
+                return "Fulham";
+            case 3:
                 return "Kensington";
         }
     }

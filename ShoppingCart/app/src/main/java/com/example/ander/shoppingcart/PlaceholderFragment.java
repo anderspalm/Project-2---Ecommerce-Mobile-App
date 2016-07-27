@@ -1,6 +1,9 @@
 package com.example.ander.shoppingcart;
 
+import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -36,6 +39,7 @@ public class PlaceholderFragment extends Fragment {
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         tab_number = getArguments().getInt(TAB_NUMBER, 0); //Getting the argument
 
         View view = inflater.inflate(R.layout.recycle_view, container, false);
@@ -46,17 +50,35 @@ public class PlaceholderFragment extends Fragment {
 
         switch (tab_number) {
             case 0:
+                String query_text = getArguments().getString("query_key");
+                if (query_text == null) {
 
+                    RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(mContext, 2);
+                    mRecyclerView.setLayoutManager(gridLayoutManager);
 
+                    DBHelper dbHelper = DBHelper.getInstance(mContext);
+                    SQLRecycleAdapter adapter = new SQLRecycleAdapter(dbHelper.getBatterseaRentals(), R.layout.recycle_view_items);
+
+                    mRecyclerView.setAdapter(adapter);
+                }
+
+                else {
+                    RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(mContext, 2);
+                    mRecyclerView.setLayoutManager(gridLayoutManager);
+
+                    DBHelper dbHelper = DBHelper.getInstance(mContext);
+                    SQLRecycleAdapter adapter = new SQLRecycleAdapter(dbHelper.searchNumbers(query_text), R.layout.recycle_view_items);
+
+                    mRecyclerView.setAdapter(adapter);
+                }
 
                 break;
             case 1:
+                RecyclerView.LayoutManager gridLayoutManager1 = new GridLayoutManager(mContext,2);
+                mRecyclerView.setLayoutManager(gridLayoutManager1);
 
-                RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(mContext,2);
-                mRecyclerView.setLayoutManager(gridLayoutManager);
-
-                DBHelper dbHelper = DBHelper.getInstance(mContext);
-                SQLRecycleAdapter adapter1 = new SQLRecycleAdapter(dbHelper.getAllItems(), R.layout.recycle_view_items);
+                DBHelper dbHelper1 = DBHelper.getInstance(mContext);
+                SQLRecycleAdapter adapter1 = new SQLRecycleAdapter(dbHelper1.getChelseaRentals(), R.layout.recycle_view_items);
 
                 mRecyclerView.setAdapter(adapter1);
 
@@ -66,7 +88,7 @@ public class PlaceholderFragment extends Fragment {
                 mRecyclerView.setLayoutManager(gridLayoutManager2);
 
                 DBHelper dbHelper2 = DBHelper.getInstance(mContext);
-                SQLRecycleAdapter adapter2 = new SQLRecycleAdapter(dbHelper2.getAllItems(), R.layout.recycle_view_items);
+                SQLRecycleAdapter adapter2 = new SQLRecycleAdapter(dbHelper2.getFulhamRentals(), R.layout.recycle_view_items);
 
                 mRecyclerView.setAdapter(adapter2);
 
@@ -76,7 +98,7 @@ public class PlaceholderFragment extends Fragment {
                 mRecyclerView.setLayoutManager(gridLayoutManager3);
 
                 DBHelper dbHelper3 = DBHelper.getInstance(mContext);
-                SQLRecycleAdapter adapter3 = new SQLRecycleAdapter(dbHelper3.getAllItems(), R.layout.recycle_view_items);
+                SQLRecycleAdapter adapter3 = new SQLRecycleAdapter(dbHelper3.getKnightsbridgeRentals(), R.layout.recycle_view_items);
 
                 mRecyclerView.setAdapter(adapter3);
 

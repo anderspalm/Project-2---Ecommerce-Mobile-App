@@ -23,7 +23,7 @@ public class ItemFragment extends Fragment{
     private PlaceholderFragment.OnListItemClickListener mItemListener;
 
 
-    public static Fragment newInstance(PlaceholderFragment.OnListItemClickListener listener) {
+    public static ItemFragment newInstance(PlaceholderFragment.OnListItemClickListener listener) {
         ItemFragment fragment = new ItemFragment();
         fragment.mItemListener = listener;
         return fragment;
