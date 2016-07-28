@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import java.util.List;
+
 /**
  * Created by ander on 7/25/2016.
  */
@@ -45,5 +47,17 @@ public class ItemFragment extends Fragment{
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager(), mItemListener);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
+
     }
+
+    public String getFragmentTagFromMain(){
+      return  mSectionsPagerAdapter.getFragmentTagFromPager(mViewPager.getId(), mViewPager.getCurrentItem());
+    }
+
+    public int getPagerPosition(){
+       return mViewPager.getCurrentItem();
+    }
+
+
+
 }
