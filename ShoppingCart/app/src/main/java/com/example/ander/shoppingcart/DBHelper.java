@@ -15,23 +15,24 @@ import static java.lang.Integer.parseInt;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-
     private Cursor mitemCursor;
-    private Cursor mEastLondonCursor;
     private Cursor mSearchNumbers;
-    private Cursor mAddItemsFromClick;
     private Cursor mGetAllCartItems;
+    private Cursor mGetALLPurchasedItems;
 
     // instantiating item type table variables
     public static final Integer DATABASE_VERSION = 1;
-            ;
-//    public static final String TYPE_TABLE = "type_table_name";
-//    public static final String TYPE_ID = "_id";
-//    public static final String TYPE_NAME = "name";
+    ;
+    public static final String PURCHASED_TABLE = "purchased_table_name";
+    public static final String PURCHASED_ID = "purchased" +
+            "_id";
+    public static final String PURCHASED_NAME = "purchased_item_name";
+    public static final String PURCHASED_DESCRIPTION = "purchased_item_description";
+    public static final String PURCHASED_PRICE = "purchased_item_price";
 
     // instantiating item type table variables
     public static final String ITEM_TABLE = "item_table_name";
-    public static final String ITEM_ID = "item_id";
+    public static final String ITEM_ID = "_id";
     public static final String ITEM_NAME = "item_name";
     public static final String ITEM_DESCRIPTION = "item_description";
     public static final String ITEM_PRICE = "item_price";
@@ -39,7 +40,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     // instantiating item type table variables
     public static final String CART_TABLE = "cart_table_name";
-    public static final String CART_ID = "cart_id";
+    public static final String CART_ID = "_id";
     public static final String CART_NAME = "cart_name";
     public static final String CART_DESCRIPTION = "cart_description";
     public static final String CART_PRICE = "cart_price";
@@ -51,8 +52,9 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     private static DBHelper INSTANCE;
-    public static synchronized DBHelper getInstance(Context context){
-        if(INSTANCE == null){
+
+    public static synchronized DBHelper getInstance(Context context) {
+        if (INSTANCE == null) {
             INSTANCE = new DBHelper(context.getApplicationContext());
         }
         return INSTANCE;
@@ -61,9 +63,7 @@ public class DBHelper extends SQLiteOpenHelper {
     // creating the tables
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-//        sqLiteDatabase.execSQL("CREATE TABLE " + TYPE_TABLE + " ( " +
-//                TYPE_ID + " INTEGER PRIMARY KEY NOT NULL, " +
-//                TYPE_NAME + " TEXT ) ");
+
         sqLiteDatabase.execSQL("CREATE TABLE " +
                 ITEM_TABLE + " ( " +
                 ITEM_ID + " INTEGER PRIMARY KEY NOT NULL, " +
@@ -71,26 +71,31 @@ public class DBHelper extends SQLiteOpenHelper {
                 ITEM_DESCRIPTION + " TEXT, " +
                 ITEM_PRICE + " REAL, " +
                 ITEM_AREA + " TEXT )");
-//                ITEM_AREA + " INTEGER, " +
-//                "FOREIGN KEY (" + TYPE_ID + ") REFERENCES " +
-//                TYPE_TABLE + " (" + ITEM_TABLE + ")) ");
-        sqLiteDatabase.execSQL(" CREATE TABLE " + CART_TABLE + " (" +
+
+        sqLiteDatabase.execSQL(" CREATE TABLE " +
+                CART_TABLE + " (" +
                 CART_ID + " INTEGER PRIMARY KEY NOT NULL, " +
                 CART_NAME + " TEXT, " +
                 CART_DESCRIPTION + " TEXT, " +
                 CART_PRICE + " REAL ) ");
 
-        //adding values into table
-//        sqLiteDatabase.execSQL("INSERT INTO " + TYPE_TABLE + "(" + TYPE_NAME + ") VALUES ('Kensington')");
-//        sqLiteDatabase.execSQL("INSERT INTO " + TYPE_TABLE + "(" + TYPE_NAME + ") VALUES ('Chelsea')");
-//        sqLiteDatabase.execSQL("INSERT INTO " + TYPE_TABLE + "(" + TYPE_NAME + ") VALUES ('Knightsbridge')");
+        sqLiteDatabase.execSQL("CREATE TABLE " +
+                PURCHASED_TABLE + " ( " +
+                PURCHASED_ID + " INTEGER PRIMARY KEY NOT NULL, " +
+                PURCHASED_NAME + " TEXT, " +
+                PURCHASED_DESCRIPTION + " TEXT, " +
+                PURCHASED_PRICE + " INTEGER, " +
+                CART_ID + " INTEGER, " +
+                "FOREIGN KEY (" + CART_ID + ") REFERENCES " +
+                CART_TABLE + " (" + PURCHASED_TABLE + ")) ");
+
 
         sqLiteDatabase.execSQL("INSERT INTO " + ITEM_TABLE + "(" + ITEM_NAME + ", " + ITEM_DESCRIPTION + ", " + ITEM_PRICE + ", " + ITEM_AREA + ")" + " VALUES " +
-                "('20 St. John Road', '3 bedroom home with garden', '1500', 'Knightsbridge')");
+                "('Red Apple', 'A red fruit', '2.00', 'Fruit')");
         sqLiteDatabase.execSQL("INSERT INTO " + ITEM_TABLE + "(" + ITEM_NAME + ", " + ITEM_DESCRIPTION + ", " + ITEM_PRICE + ", " + ITEM_AREA + ")" + " VALUES " +
                 "('2 Slone Square', '6 bedroom home with garden', '1750', 'Battersea')");
         sqLiteDatabase.execSQL("INSERT INTO " + ITEM_TABLE + "(" + ITEM_NAME + ", " + ITEM_DESCRIPTION + ", " + ITEM_PRICE + ", " + ITEM_AREA + ")" + " VALUES " +
-                "('90 Warrick Road', '2 bedroom home with garden', '3500', 'Knightsbridge')");
+                "('Green Apple', 'A green fruit, very delicious', '2.00', 'Fruit')");
         sqLiteDatabase.execSQL("INSERT INTO " + ITEM_TABLE + "(" + ITEM_NAME + ", " + ITEM_DESCRIPTION + ", " + ITEM_PRICE + ", " + ITEM_AREA + ")" + " VALUES " +
                 "('10 Argyll Park', '1 bedroom home with garden', '1000', 'Battersea')");
         sqLiteDatabase.execSQL("INSERT INTO " + ITEM_TABLE + "(" + ITEM_NAME + ", " + ITEM_DESCRIPTION + ", " + ITEM_PRICE + ", " + ITEM_AREA + ")" + " VALUES " +
@@ -100,82 +105,51 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("INSERT INTO " + ITEM_TABLE + "(" + ITEM_NAME + ", " + ITEM_DESCRIPTION + ", " + ITEM_PRICE + ", " + ITEM_AREA + ")" + " VALUES " +
                 "('10 Warren Road', '2 bedroom home with garden', '1520', 'Fulham')");
         sqLiteDatabase.execSQL("INSERT INTO " + ITEM_TABLE + "(" + ITEM_NAME + ", " + ITEM_DESCRIPTION + ", " + ITEM_PRICE + ", " + ITEM_AREA + ")" + " VALUES " +
-                "('5 Something Park', '1 bedroom home with garden','4500', 'Knightsbridge')");
+                "('Pulm', '1 bedroom home with garden','4500', 'Fruit')");
         sqLiteDatabase.execSQL("INSERT INTO " + ITEM_TABLE + "(" + ITEM_NAME + ", " + ITEM_DESCRIPTION + ", " + ITEM_PRICE + ", " + ITEM_AREA + ")" + " VALUES " +
-                "('20 St. John Road', '3 bedroom home with garden', '4500', 'Knightsbridge')");
+                "('Dragon Fruit', '3 bedroom home with garden', '4500', 'Fruit')");
         sqLiteDatabase.execSQL("INSERT INTO " + ITEM_TABLE + "(" + ITEM_NAME + ", " + ITEM_DESCRIPTION + ", " + ITEM_PRICE + ", " + ITEM_AREA + ")" + " VALUES " +
                 "('2 Eaton Square', '6 bedroom home with garden', '3550', 'Chelsea')");
         sqLiteDatabase.execSQL("INSERT INTO " + ITEM_TABLE + "(" + ITEM_NAME + ", " + ITEM_DESCRIPTION + ", " + ITEM_PRICE + ", " + ITEM_AREA + ")" + " VALUES " +
-                "('90 Warrick Road', '2 bedroom home with garden', '1500', 'Knightsbridge')");
+                "('Kiwi', 'An edible berries of several species of woody vines in the genus Actinidia ', '3.00', 'Fruit')");
         sqLiteDatabase.execSQL("INSERT INTO " + ITEM_TABLE + "(" + ITEM_NAME + ", " + ITEM_DESCRIPTION + ", " + ITEM_PRICE + ", " + ITEM_AREA + ")" + " VALUES " +
                 "('50 loop Park', '1 bedroom home with garden', '2000', 'Battersea')");
         sqLiteDatabase.execSQL("INSERT INTO " + ITEM_TABLE + "(" + ITEM_NAME + ", " + ITEM_DESCRIPTION + ", " + ITEM_PRICE + ", " + ITEM_AREA + ")" + " VALUES " +
-                "('20 St. John Road', '3 bedroom home with garden', '1500', 'Knightsbridge')");
+                "('20 St. John Road', '3 bedroom home with garden', '1500', 'Fruit')");
         sqLiteDatabase.execSQL("INSERT INTO " + ITEM_TABLE + "(" + ITEM_NAME + ", " + ITEM_DESCRIPTION + ", " + ITEM_PRICE + ", " + ITEM_AREA + ")" + " VALUES " +
                 "('2 Joal Court', '6 bedroom home with garden', '1230', 'Fulham')");
         sqLiteDatabase.execSQL("INSERT INTO " + ITEM_TABLE + "(" + ITEM_NAME + ", " + ITEM_DESCRIPTION + ", " + ITEM_PRICE + ", " + ITEM_AREA + ")" + " VALUES " +
                 "('10 Warren Road', '2 bedroom home with garden', '1520', 'Fulham')");
         sqLiteDatabase.execSQL("INSERT INTO " + ITEM_TABLE + "(" + ITEM_NAME + ", " + ITEM_DESCRIPTION + ", " + ITEM_PRICE + ", " + ITEM_AREA + ")" + " VALUES " +
                 "('5 Something Park', '1 bedroom home with garden','1500', 'Chelsea')");
-
     }
 
-    // removing and recreating the tables
-    @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-//        sqLiteDatabase.execSQL(DELETE_TYPE_TABLE);
-        sqLiteDatabase.execSQL(DELETE_ITEM_TABLE);
-        sqLiteDatabase.execSQL(DELETE_CART_TABLE);
-    }
 
-    // creating removal methods for the tables
-//    private static final String DELETE_TYPE_TABLE = " DROP TABLE IF EXISTS " + TYPE_TABLE;
+    //    *******************************************
+
+//   removing and recreating the tables
+
+    //    *******************************************
+
     private static final String DELETE_ITEM_TABLE = " DROP TABLE IF EXISTS " + ITEM_TABLE;
     private static final String DELETE_CART_TABLE = " DROP TABLE IF EXISTS " + CART_TABLE;
+    private static final String DELETE_ITEMS_BOUGHT_TABLE = "DROP TABLE IF EXISTS " + PURCHASED_TABLE;
 
-    public ArrayList<String> getNames(){
-        SQLiteDatabase db = getReadableDatabase();
-        ArrayList arrayList = new ArrayList();
-        Cursor cursor = db.rawQuery("SELECT " + ITEM_NAME + " FROM " + ITEM_TABLE, null);
-        if(cursor.moveToFirst()) {
-            while(!cursor.isAfterLast()){
-                arrayList.add(cursor.getString(cursor.getColumnIndex(ITEM_NAME)));
-                cursor.moveToNext();
-            }
-        }
-        cursor.close();
-        return arrayList;
+    @Override
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+
+        sqLiteDatabase.execSQL(DELETE_ITEM_TABLE);
+        sqLiteDatabase.execSQL(DELETE_CART_TABLE);
+        sqLiteDatabase.execSQL(DELETE_ITEMS_BOUGHT_TABLE);
     }
 
-    public ArrayList<String> getPrices(){
-        SQLiteDatabase db = getReadableDatabase();
-        ArrayList arrayList = new ArrayList();
-        Cursor cursor = db.rawQuery("SELECT " + ITEM_PRICE + " FROM " + ITEM_TABLE, null);
-        if(cursor.moveToFirst()) {
-            while(!cursor.isAfterLast()){
-                arrayList.add(cursor.getString(cursor.getColumnIndex(ITEM_PRICE)));
-                cursor.moveToNext();
-            }
-        }
-        cursor.close();
 
-        return arrayList;
-    }
+//    *******************************************
 
-    public ArrayList<String> getDescriptions(){
-        SQLiteDatabase db = getReadableDatabase();
-        ArrayList arrayList = new ArrayList();
-        Cursor cursor = db.rawQuery("SELECT " + ITEM_DESCRIPTION + " FROM " + ITEM_TABLE, null);
-        if(cursor.moveToFirst()) {
-            while(!cursor.isAfterLast()){
-                arrayList.add(cursor.getString(cursor.getColumnIndex(ITEM_DESCRIPTION)));
-                cursor.moveToNext();
-            }
-        }
-        cursor.close();
+//    query to get all items is below
 
-        return arrayList;
-    }
+//    *******************************************
+
 
     public List<ItemObject> getAllItems() {
 
@@ -184,15 +158,15 @@ public class DBHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = getReadableDatabase();
 
-        mitemCursor = db.query(ITEM_TABLE,null,null,null,null,null,null,null);
-        if(mitemCursor.moveToFirst()){
-            while (!mitemCursor.isAfterLast()){
+        mitemCursor = db.query(ITEM_TABLE, null, null, null, null, null, null, null);
+        if (mitemCursor.moveToFirst()) {
+            while (!mitemCursor.isAfterLast()) {
                 // collection of types
                 String aName = mitemCursor.getString(mitemCursor.getColumnIndex(ITEM_NAME));
                 String aDescription = mitemCursor.getString(mitemCursor.getColumnIndex(ITEM_DESCRIPTION));
                 float aPrice = mitemCursor.getFloat(mitemCursor.getColumnIndex(ITEM_PRICE));
                 // instantiate object ArrayList
-                item = new ItemObject(aName,aDescription,aPrice);
+                item = new ItemObject(aName, aDescription, aPrice);
                 // add variables to the object ArrayList
                 list.add(item);
                 mitemCursor.moveToNext();
@@ -201,24 +175,27 @@ public class DBHelper extends SQLiteOpenHelper {
         return list;
     }
 
+
+//   The 4 queries to receive all of one tab type are below
+
     public List<ItemObject> getBatterseaRentals() {
         SQLiteDatabase db = getReadableDatabase();
         ArrayList<ItemObject> arrayList = new ArrayList<>();
         ItemObject object = null;
 
-            String[] columns = {ITEM_ID, ITEM_NAME, ITEM_DESCRIPTION ,ITEM_PRICE, ITEM_AREA};
-            String[] value = {"Battersea"};
-            String whereClause = " = ?";
-        mitemCursor = db.query(ITEM_TABLE,columns,ITEM_AREA + whereClause,value, null,null,null,null);
+        String[] columns = {ITEM_ID, ITEM_NAME, ITEM_DESCRIPTION, ITEM_PRICE, ITEM_AREA};
+        String[] value = {"Battersea"};
+        String whereClause = " = ?";
+        mitemCursor = db.query(ITEM_TABLE, columns, ITEM_AREA + whereClause, value, null, null, null, null);
 
-        if(mitemCursor.moveToFirst()){
-            while (!mitemCursor.isAfterLast()){
+        if (mitemCursor.moveToFirst()) {
+            while (!mitemCursor.isAfterLast()) {
                 // collection of types
                 String aName = mitemCursor.getString(mitemCursor.getColumnIndex(ITEM_NAME));
                 String aDescription = mitemCursor.getString(mitemCursor.getColumnIndex(ITEM_DESCRIPTION));
                 float aPrice = mitemCursor.getFloat(mitemCursor.getColumnIndex(ITEM_PRICE));
                 // instantiate object ArrayList
-                object = new ItemObject(aName,aDescription,aPrice);
+                object = new ItemObject(aName, aDescription, aPrice);
                 // add variables to the object ArrayList
                 arrayList.add(object);
                 mitemCursor.moveToNext();
@@ -232,19 +209,19 @@ public class DBHelper extends SQLiteOpenHelper {
         ArrayList<ItemObject> arrayList = new ArrayList<>();
         ItemObject object = null;
 
-        String[] columns = {ITEM_ID, ITEM_NAME, ITEM_DESCRIPTION ,ITEM_PRICE, ITEM_AREA};
+        String[] columns = {ITEM_ID, ITEM_NAME, ITEM_DESCRIPTION, ITEM_PRICE, ITEM_AREA};
         String[] value = {"Fulham"};
         String whereClause = " = ?";
-        mitemCursor = db.query(ITEM_TABLE,columns,ITEM_AREA + whereClause,value, null,null,null,null);
+        mitemCursor = db.query(ITEM_TABLE, columns, ITEM_AREA + whereClause, value, null, null, null, null);
 
-        if(mitemCursor.moveToFirst()){
-            while (!mitemCursor.isAfterLast()){
+        if (mitemCursor.moveToFirst()) {
+            while (!mitemCursor.isAfterLast()) {
                 // collection of types
                 String aName = mitemCursor.getString(mitemCursor.getColumnIndex(ITEM_NAME));
                 String aDescription = mitemCursor.getString(mitemCursor.getColumnIndex(ITEM_DESCRIPTION));
                 float aPrice = mitemCursor.getFloat(mitemCursor.getColumnIndex(ITEM_PRICE));
                 // instantiate object ArrayList
-                object = new ItemObject(aName,aDescription,aPrice);
+                object = new ItemObject(aName, aDescription, aPrice);
                 // add variables to the object ArrayList
                 arrayList.add(object);
                 mitemCursor.moveToNext();
@@ -253,24 +230,24 @@ public class DBHelper extends SQLiteOpenHelper {
         return arrayList;
     }
 
-    public List<ItemObject> getKnightsbridgeRentals() {
+    public List<ItemObject> getFruit() {
         SQLiteDatabase db = getReadableDatabase();
         ArrayList<ItemObject> arrayList = new ArrayList<>();
         ItemObject object = null;
 
-        String[] columns = {ITEM_ID, ITEM_NAME, ITEM_DESCRIPTION ,ITEM_PRICE, ITEM_AREA};
-        String[] value = {"Knightsbridge"};
+        String[] columns = {ITEM_ID, ITEM_NAME, ITEM_DESCRIPTION, ITEM_PRICE, ITEM_AREA};
+        String[] value = {"Fruit"};
         String whereClause = " = ?";
-        mitemCursor = db.query(ITEM_TABLE,columns,ITEM_AREA + whereClause,value, null,null,null,null);
+        mitemCursor = db.query(ITEM_TABLE, columns, ITEM_AREA + whereClause, value, null, null, null, null);
 
-        if(mitemCursor.moveToFirst()){
-            while (!mitemCursor.isAfterLast()){
+        if (mitemCursor.moveToFirst()) {
+            while (!mitemCursor.isAfterLast()) {
                 // collection of types
                 String aName = mitemCursor.getString(mitemCursor.getColumnIndex(ITEM_NAME));
                 String aDescription = mitemCursor.getString(mitemCursor.getColumnIndex(ITEM_DESCRIPTION));
                 float aPrice = mitemCursor.getFloat(mitemCursor.getColumnIndex(ITEM_PRICE));
                 // instantiate object ArrayList
-                object = new ItemObject(aName,aDescription,aPrice);
+                object = new ItemObject(aName, aDescription, aPrice);
                 // add variables to the object ArrayList
                 arrayList.add(object);
                 mitemCursor.moveToNext();
@@ -284,19 +261,19 @@ public class DBHelper extends SQLiteOpenHelper {
         ArrayList<ItemObject> arrayList = new ArrayList<>();
         ItemObject object = null;
 
-        String[] columns = {ITEM_ID, ITEM_NAME, ITEM_DESCRIPTION ,ITEM_PRICE, ITEM_AREA};
+        String[] columns = {ITEM_ID, ITEM_NAME, ITEM_DESCRIPTION, ITEM_PRICE, ITEM_AREA};
         String[] value = {"Chelsea"};
         String whereClause = " = ?";
-        mitemCursor = db.query(ITEM_TABLE,columns,ITEM_AREA + whereClause,value, null,null,null,null);
+        mitemCursor = db.query(ITEM_TABLE, columns, ITEM_AREA + whereClause, value, null, null, null, null);
 
-        if(mitemCursor.moveToFirst()){
-            while (!mitemCursor.isAfterLast()){
+        if (mitemCursor.moveToFirst()) {
+            while (!mitemCursor.isAfterLast()) {
                 // collection of types
                 String aName = mitemCursor.getString(mitemCursor.getColumnIndex(ITEM_NAME));
                 String aDescription = mitemCursor.getString(mitemCursor.getColumnIndex(ITEM_DESCRIPTION));
                 float aPrice = mitemCursor.getFloat(mitemCursor.getColumnIndex(ITEM_PRICE));
                 // instantiate object ArrayList
-                object = new ItemObject(aName,aDescription,aPrice);
+                object = new ItemObject(aName, aDescription, aPrice);
                 // add variables to the object ArrayList
                 arrayList.add(object);
                 mitemCursor.moveToNext();
@@ -306,53 +283,14 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-//    Query searches below
+//   *******************************************
+
+//  The 4 Query searches for each type are below
+
+//   *******************************************
 
 
-    public List<ItemObject> knightsbridgeQuerySearch(String query){
-        SQLiteDatabase db = this.getReadableDatabase();
-        ItemObject itemObject = null;
-        ArrayList<ItemObject> arrayList = new ArrayList<>();
-
-        mSearchNumbers = db.rawQuery("SELECT " +
-                ITEM_ID + "," +
-                ITEM_NAME + "," +
-                ITEM_DESCRIPTION + "," +
-                ITEM_PRICE + "," +
-                ITEM_AREA +
-
-                " FROM " +
-                ITEM_TABLE +
-
-                " WHERE " +
-                ITEM_NAME + " LIKE '%query%' OR " +
-                ITEM_DESCRIPTION + "  LIKE '%query%' OR " +
-                ITEM_PRICE + " LIKE '%query%' AND " +
-                ITEM_AREA + " = 'Knightsbridge'"
-
-                ,null);
-
-        if(mSearchNumbers.moveToFirst()){
-            while (!mSearchNumbers.isAfterLast()){
-                // collection of types
-                String aName = mSearchNumbers.getString(mSearchNumbers.getColumnIndex(ITEM_NAME));
-                String aDescription = mSearchNumbers.getString(mSearchNumbers.getColumnIndex(ITEM_DESCRIPTION));
-                float aPrice = mSearchNumbers.getFloat(mSearchNumbers.getColumnIndex(ITEM_PRICE));
-                // instantiate object ArrayList
-                itemObject = new ItemObject(aName,aDescription,aPrice);
-                // add variables to the object ArrayList
-                arrayList.add(itemObject);
-                mSearchNumbers.moveToNext();
-            }
-        }
-        return arrayList;
-
-//        you can add a find the nearest number using the following
-//        SELECT * FROM table
-//        ORDER BY ABS(? - value)
-//        LIMIT 1
-    }
-    public List<ItemObject> batterseaQuerySearch(String query){
+    public List<ItemObject> fruitQuerySearch(String query) {
         SQLiteDatabase db = this.getReadableDatabase();
         ItemObject itemObject = null;
         ArrayList<ItemObject> arrayList = new ArrayList<>();
@@ -368,21 +306,61 @@ public class DBHelper extends SQLiteOpenHelper {
                         ITEM_TABLE +
 
                         " WHERE " +
-                        ITEM_NAME + " LIKE '%"+query+"%' OR " +
-                        ITEM_DESCRIPTION + "  LIKE '%"+query+"%' OR " +
-                        ITEM_PRICE + " LIKE '%"+query+"%' AND " +
+                        ITEM_NAME + " LIKE '%"+ query +"%' OR " +
+                        ITEM_DESCRIPTION + "  LIKE '%"+ query + "%' OR " +
+                        ITEM_PRICE + " LIKE '%"+ query +"%' AND " +
+                        ITEM_AREA + " = 'Fruit'"
+
+                , null);
+
+        if (mSearchNumbers.moveToFirst()) {
+            while (!mSearchNumbers.isAfterLast()) {
+                // collection of types
+                String aName = mSearchNumbers.getString(mSearchNumbers.getColumnIndex(ITEM_NAME));
+                String aDescription = mSearchNumbers.getString(mSearchNumbers.getColumnIndex(ITEM_DESCRIPTION));
+                float aPrice = mSearchNumbers.getFloat(mSearchNumbers.getColumnIndex(ITEM_PRICE));
+                // instantiate object ArrayList
+                itemObject = new ItemObject(aName, aDescription, aPrice);
+                // add variables to the object ArrayList
+                arrayList.add(itemObject);
+                mSearchNumbers.moveToNext();
+            }
+        }
+        return arrayList;
+    }
+
+
+    public List<ItemObject> batterseaQuerySearch(String query) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ItemObject itemObject = null;
+        ArrayList<ItemObject> arrayList = new ArrayList<>();
+
+        mSearchNumbers = db.rawQuery("SELECT " +
+                        ITEM_ID + "," +
+                        ITEM_NAME + "," +
+                        ITEM_DESCRIPTION + "," +
+                        ITEM_PRICE + "," +
+                        ITEM_AREA +
+
+                        " FROM " +
+                        ITEM_TABLE +
+
+                        " WHERE " +
+                        ITEM_NAME + " LIKE '%" + query + "%' OR " +
+                        ITEM_DESCRIPTION + "  LIKE '%" + query + "%' OR " +
+                        ITEM_PRICE + " LIKE '%" + query + "%' AND " +
                         ITEM_AREA + " = 'Battersea'"
 
-                ,null);
+                , null);
 
-        if(mSearchNumbers.moveToFirst()){
-            while (!mSearchNumbers.isAfterLast()){
+        if (mSearchNumbers.moveToFirst()) {
+            while (!mSearchNumbers.isAfterLast()) {
                 // collection of types
                 String aName = mSearchNumbers.getString(mSearchNumbers.getColumnIndex(ITEM_NAME));
                 String aDescription = mSearchNumbers.getString(mSearchNumbers.getColumnIndex(ITEM_DESCRIPTION));
                 float aPrice = mSearchNumbers.getFloat(mSearchNumbers.getColumnIndex(ITEM_PRICE));
                 // instantiate object ArrayList
-                itemObject = new ItemObject(aName,aDescription,aPrice);
+                itemObject = new ItemObject(aName, aDescription, aPrice);
                 // add variables to the object ArrayList
                 arrayList.add(itemObject);
                 mSearchNumbers.moveToNext();
@@ -396,7 +374,7 @@ public class DBHelper extends SQLiteOpenHelper {
 //        LIMIT 1
     }
 
-    public List<ItemObject> fulhamQuerySearch(String query){
+    public List<ItemObject> fulhamQuerySearch(String query) {
         SQLiteDatabase db = this.getReadableDatabase();
         ItemObject itemObject = null;
         ArrayList<ItemObject> arrayList = new ArrayList<>();
@@ -412,21 +390,21 @@ public class DBHelper extends SQLiteOpenHelper {
                         ITEM_TABLE +
 
                         " WHERE " +
-                        ITEM_NAME + " LIKE '%query%' OR " +
-                        ITEM_DESCRIPTION + "  LIKE '%query%' OR " +
-                        ITEM_PRICE + " LIKE '%query%' AND " +
+                        ITEM_NAME + " LIKE '%"+ query +"%' OR " +
+                        ITEM_DESCRIPTION + "  LIKE '%" +query+" %' OR " +
+                        ITEM_PRICE + " LIKE '%" + query + "%' AND " +
                         ITEM_AREA + " = 'Fulham'"
 
-                ,null);
+                , null);
 
-        if(mSearchNumbers.moveToFirst()){
-            while (!mSearchNumbers.isAfterLast()){
+        if (mSearchNumbers.moveToFirst()) {
+            while (!mSearchNumbers.isAfterLast()) {
                 // collection of types
                 String aName = mSearchNumbers.getString(mSearchNumbers.getColumnIndex(ITEM_NAME));
                 String aDescription = mSearchNumbers.getString(mSearchNumbers.getColumnIndex(ITEM_DESCRIPTION));
                 float aPrice = mSearchNumbers.getFloat(mSearchNumbers.getColumnIndex(ITEM_PRICE));
                 // instantiate object ArrayList
-                itemObject = new ItemObject(aName,aDescription,aPrice);
+                itemObject = new ItemObject(aName, aDescription, aPrice);
                 // add variables to the object ArrayList
                 arrayList.add(itemObject);
                 mSearchNumbers.moveToNext();
@@ -451,9 +429,9 @@ public class DBHelper extends SQLiteOpenHelper {
                         ITEM_TABLE +
 
                         " WHERE " +
-                        ITEM_NAME + " LIKE '%query%' OR " +
-                        ITEM_DESCRIPTION + "  LIKE '%query%' OR " +
-                        ITEM_PRICE + " LIKE '%query%' AND " +
+                        ITEM_NAME + " LIKE '%"+ query + "%' OR " +
+                        ITEM_DESCRIPTION + "  LIKE '%" + query +"%' OR " +
+                        ITEM_PRICE + " LIKE '%"+ query +"%' AND " +
                         ITEM_AREA + " = 'Chelsea'"
 
                 , null);
@@ -476,46 +454,106 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-//    Insert Clicked item to cart table
+//    *******************************************
+
+    //     Queries for the Shopping cart below
+    //    Insert Clicked item to cart table
+
+//    *******************************************
+
+
     public void addItemsFromClick(String name, String description, String price) {
         SQLiteDatabase db = getWritableDatabase();
         String name1 = "'" + name + "'";
         String description1 = "'" + description + "'";
         String price1 = "'" + price + "'";
 
-        db.execSQL("INSERT INTO " + CART_TABLE + "(" + CART_NAME + ", " + CART_DESCRIPTION + ", " + CART_PRICE + ")" + " VALUES " +
-                "( " + name1 + ", " + description1 + ", " + price1 + " )");
+        db.execSQL("INSERT INTO " + CART_TABLE + "(" + CART_NAME + ", " +
+                CART_DESCRIPTION + ", " +
+                CART_PRICE + ")" +
+                " VALUES " + "( " + name1 + ", " + description1 + ", " + price1 + " )");
+        db.close();
+    }
+
+    public Cursor getAllCartItems() {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] columns = {CART_ID, CART_NAME, CART_DESCRIPTION, CART_PRICE};
+        mGetAllCartItems = db.query(CART_TABLE, columns, null, null, null, null, null, null);
+        return mGetAllCartItems;
+    }
+
+    public void removeCartItem(String id) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL(
+                "DELETE " +
+                        " FROM " + CART_TABLE +
+                        " WHERE " + CART_ID + " = " + id);
         db.close();
     }
 
 
+//    Recently purchased items queries below
 
-    public List<String> getAllCartItems(){
+    public void addPurchasedItemsFromCheckout(String name, String description, String price) {
+        SQLiteDatabase db = getWritableDatabase();
+        String name1 = "'" + name + "'";
+        String description1 = "'" + description + "'";
+        String price1 = "'" + price + "'";
+
+        db.execSQL("INSERT INTO " + PURCHASED_TABLE + "(" + PURCHASED_NAME + ", " +
+                PURCHASED_DESCRIPTION + ", " +
+                PURCHASED_PRICE + ")" +
+                " VALUES " + "( " + name1 + ", " + description1 + ", " + price1 + " )");
+        db.close();
+    }
+
+    public Cursor getPurchasedItems() {
         SQLiteDatabase db = getReadableDatabase();
-
-        ArrayList<String> arrayList = new ArrayList<>();
-        mGetAllCartItems = db.rawQuery("SELECT * FROM " + CART_TABLE, null);
-        if(mGetAllCartItems.moveToFirst()){
-            while (!mGetAllCartItems.isAfterLast()){
-                String name = mGetAllCartItems.getString(mGetAllCartItems.getColumnIndex(CART_NAME));
-                String description = mGetAllCartItems.getString(mGetAllCartItems.getColumnIndex(CART_DESCRIPTION));
-                String price = mGetAllCartItems.getString(mGetAllCartItems.getColumnIndex(CART_PRICE));
-                arrayList.add(name);
-                arrayList.add(description);
-                arrayList.add(price);
-                mGetAllCartItems.moveToNext();
-            }
-        }
-        return arrayList;
+        String[] columns = {PURCHASED_ID, PURCHASED_NAME, PURCHASED_DESCRIPTION, PURCHASED_PRICE};
+        mGetALLPurchasedItems = db.query(PURCHASED_TABLE, columns, null, null, null, null, null, null);
+        return mGetALLPurchasedItems;
     }
 
 
-    /*
-    get the information from the click
-    set info items to variables
-    add variables to DBhelper method
-    method uses variables to find item
-    method inserts same data into new table
-     */
+//    public ArrayList<String> getNames() {
+//        SQLiteDatabase db = getReadableDatabase();
+//        ArrayList arrayList = new ArrayList();
+//        Cursor cursor = db.rawQuery("SELECT " + ITEM_NAME + " FROM " + ITEM_TABLE, null);
+//        if (cursor.moveToFirst()) {
+//            while (!cursor.isAfterLast()) {
+//                arrayList.add(cursor.getString(cursor.getColumnIndex(ITEM_NAME)));
+//                cursor.moveToNext();
+//            }
+//        }
+//        cursor.close(); return arrayList;
+//    }
+//
+//    public ArrayList<String> getPrices() {
+//        SQLiteDatabase db = getReadableDatabase();
+//        ArrayList arrayList = new ArrayList();
+//        Cursor cursor = db.rawQuery("SELECT " + ITEM_PRICE + " FROM " + ITEM_TABLE, null);
+//        if (cursor.moveToFirst()) {
+//            while (!cursor.isAfterLast()) {
+//                arrayList.add(cursor.getString(cursor.getColumnIndex(ITEM_PRICE)));
+//                cursor.moveToNext();
+//            }
+//        }
+//        cursor.close(); return arrayList;
+//    }
+//
+//    public ArrayList<String> getDescriptions() {
+//        SQLiteDatabase db = getReadableDatabase();
+//        ArrayList arrayList = new ArrayList();
+//        Cursor cursor = db.rawQuery("SELECT " + ITEM_DESCRIPTION + " FROM " + ITEM_TABLE, null);
+//        if (cursor.moveToFirst()) {
+//            while (!cursor.isAfterLast()) {
+//                arrayList.add(cursor.getString(cursor.getColumnIndex(ITEM_DESCRIPTION)));
+//                cursor.moveToNext();
+//            }
+//        }
+//        cursor.close(); return arrayList;
+//    }
+
 
 }
+

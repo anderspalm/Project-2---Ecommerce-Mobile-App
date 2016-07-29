@@ -7,6 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.util.List;
@@ -14,6 +17,9 @@ import java.util.List;
 import static android.support.v4.app.ActivityCompat.startActivity;
 
 public class SQLRecycleAdapter extends RecyclerView.Adapter<RecViewHolder> {
+
+    public Animation animation;
+    public ImageButton mButton;
 
     public static SQLRecycleAdapter instance;
     List<ItemObject> mitemObjects;
@@ -24,10 +30,8 @@ public class SQLRecycleAdapter extends RecyclerView.Adapter<RecViewHolder> {
         mitemXML = itemLayout;
     }
 
-    public static SQLRecycleAdapter getInstance(List<ItemObject> objectInput, int itemLayout)
-    {
-        if (instance == null)
-        {
+    public static SQLRecycleAdapter getInstance(List<ItemObject> objectInput, int itemLayout) {
+        if (instance == null) {
             // Create the instance
             instance = new SQLRecycleAdapter(objectInput, itemLayout);
         }
@@ -37,7 +41,7 @@ public class SQLRecycleAdapter extends RecyclerView.Adapter<RecViewHolder> {
     @Override
     public RecViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-//          get the layout inflater from the parent
+//          get the layout inflater the parent
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 //          inflate to each row with the information from the viewholder
         View view = inflater.inflate(R.layout.recycle_view_items, parent, false);
@@ -55,29 +59,48 @@ public class SQLRecycleAdapter extends RecyclerView.Adapter<RecViewHolder> {
 
 //        ArrayList dbName = DBHelper.getInstance(mContext).getNames();
         holder.mtextViewName.setText(itemObject.getmName());
-        final CharSequence name = holder.mtextViewName.getText();
+        CharSequence name = holder.mtextViewName.getText();
 
 
 //        ArrayList dbDescription = DBHelper.getInstance(mContext).getDescriptions();
         holder.mtextViewDescription.setText(itemObject.getmDescription());
-        final CharSequence description = holder.mtextViewDescription.getText();
+        CharSequence description = holder.mtextViewDescription.getText();
 
 //        ArrayList dbPrice = DBHelper.getInstance(mContext).getPrices();
         holder.mtextViewPrice.setText(String.valueOf(itemObject.getmPrice()));
-        final CharSequence price = holder.mtextViewPrice.getText();
+        CharSequence price = holder.mtextViewPrice.getText();
 
+        final String finalName = name.toString();
+        final String finalDescription = description.toString();
+        final String finalPrice = price.toString();
+
+        holder.maddToCartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                animation = AnimationUtils.loadAnimation(view.getContext(), R.anim.scale);
+                view.startAnimation(animation);
+
+                Toast.makeText(view.getContext(), "Added " + finalName + " to cart", Toast.LENGTH_SHORT).show();
+
+                if ((finalName != null) && (finalDescription != null) && (finalPrice != null)) {
+                    DBHelper.getInstance(view.getContext()).addItemsFromClick(finalName, finalDescription, finalPrice);
+                }
+            }
+        });
 
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(view.getContext(), "You clicked a tab " + name , Toast.LENGTH_SHORT).show();
+                Toast.makeText(view.getContext(), "" + finalName, Toast.LENGTH_SHORT).show();
 
-                Intent intent = new Intent(view.getContext(), ShoppingCart.class);
-                intent.putExtra("name_key", name);
-                intent.putExtra("desc_key", description);
-                intent.putExtra("price_key", price);
+                Intent intent = new Intent(view.getContext(), ItemDisplayActivity.class);
+                intent.putExtra("name_key", finalName);
+                intent.putExtra("desc_key", finalDescription);
+                intent.putExtra("price_key", finalPrice);
                 view.getContext().startActivity(intent);
+
             }
         });
     }
@@ -87,17 +110,12 @@ public class SQLRecycleAdapter extends RecyclerView.Adapter<RecViewHolder> {
         return mitemObjects.size();
     }
 
-    public void updateRecViewItems(List<ItemObject> list){
+    public void updateRecViewItems(List<ItemObject> list) {
         mitemObjects = list;
         notifyDataSetChanged();
     }
 
-//    public void removeAllAdapterItems(List<ItemObject> itemObjects) {
-//        mitemObjects.removeAll(itemObjects);
-//        notifyDataSetChanged();
-//    }
-
-    public void addAdapterItems(List<ItemObject> objectInput){
+    public void addAdapterItems(List<ItemObject> objectInput) {
         mitemObjects = objectInput;
     }
 

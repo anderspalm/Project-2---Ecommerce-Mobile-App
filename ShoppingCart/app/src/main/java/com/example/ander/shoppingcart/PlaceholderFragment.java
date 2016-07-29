@@ -47,6 +47,7 @@ public class PlaceholderFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.recycle_view, container, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyler_widget);
+
         RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(mContext, 2);
         mRecyclerView.setLayoutManager(gridLayoutManager);
 
@@ -67,7 +68,7 @@ public class PlaceholderFragment extends Fragment {
                 mRecyclerView.setAdapter(madapter);
                 break;
             default:
-                madapter = new SQLRecycleAdapter(dbHelper.getKnightsbridgeRentals(), R.layout.recycle_view_items);
+                madapter = new SQLRecycleAdapter(dbHelper.getFruit(), R.layout.recycle_view_items);
                 mRecyclerView.setAdapter(madapter);
         }
         return view;
@@ -88,7 +89,7 @@ public class PlaceholderFragment extends Fragment {
                 madapter.updateRecViewItems(dbHelper.fulhamQuerySearch(query));
                 break;
             default:
-                madapter.updateRecViewItems(dbHelper.knightsbridgeQuerySearch(query));
+                madapter.updateRecViewItems(dbHelper.fruitQuerySearch(query));
         }
     }
 

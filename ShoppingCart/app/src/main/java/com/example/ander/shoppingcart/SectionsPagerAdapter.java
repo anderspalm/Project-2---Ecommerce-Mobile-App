@@ -47,7 +47,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             case 2:
                 return "Fulham";
             case 3:
-                return "Kensington";
+                return "Fruit";
         }
     }
 

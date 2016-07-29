@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements PlaceholderFragme
             @Override
             public void onClick(View view) {
                 Log.d("MainActivity", "onClick: FAB clicked");
-                Toast.makeText(view.getContext(), "You clicked a button! Whoop whoop! " , Toast.LENGTH_SHORT).show();
+//                Toast.makeText(view.getContext(), "To the cart! " , Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, ShoppingCart.class);
                 startActivity(intent);
             }
@@ -53,8 +53,6 @@ public class MainActivity extends AppCompatActivity implements PlaceholderFragme
 
 
     }
-
-
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -78,22 +76,14 @@ public class MainActivity extends AppCompatActivity implements PlaceholderFragme
             android.support.v4.app.Fragment placeholderFragment = getSupportFragmentManager().findFragmentByTag(tagId);
 
             int position = ((ItemFragment) fragment).getPagerPosition();
-//
-           ((PlaceholderFragment) placeholderFragment).getQuery(query, position);
-//            fragment.setArguments(bundle);
 
-//            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//            fragmentTransaction.detach(fragment);
-//            fragmentTransaction.attach(fragment);
-//            fragmentTransaction.commit();
+           ((PlaceholderFragment) placeholderFragment).getQuery(query, position);
 
         }
     }
 
     @Override
-    public void OnListItemClicked(int tabPosition, int listPosition) {
-
-    }
+    public void OnListItemClicked(int tabPosition, int listPosition) {}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
