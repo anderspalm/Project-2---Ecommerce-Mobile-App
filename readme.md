@@ -144,8 +144,7 @@ This will serve as a helpful overall gauge of whether you met the project goals,
 The first thing a user should see is a landing page with a list of item
 types and directory tabs.
 
-Tests:
-
+Test:
 The user can open the history and open dialog view and close said view
 The user can open the other tabs and enter their activities or open their
 dialog boxes.
@@ -183,6 +182,7 @@ As a user, I can see the search results in the frame layout
 4.
 User can interact with Recycler view item
 
+Test:
 As a user, I can click on an item and view it's contents in a dedicated activity
 As a user, I can add said item to the shopping cart
 As a user, as a user I will see said item in the shopping cart on purchase button click 
