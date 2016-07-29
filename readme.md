@@ -136,6 +136,7 @@ Base on the requirements you can earn a maximum of 24 requirement points  and 3 
 This will serve as a helpful overall gauge of whether you met the project goals, but __the more important scores are the individual ones__ above, which can help you identify where to focus your efforts for the next project!
 
 ---
+---
 
 #### User Stories
 
@@ -143,16 +144,15 @@ This will serve as a helpful overall gauge of whether you met the project goals,
 The first thing a user should see is a landing page with a list of item
 types and directory tabs.
 
-Tests:
-
+Test:
 The user can open the history and open dialog view and close said view
 The user can open the other tabs and enter their activities or open their
 dialog boxes.
 
 User Story 1: The user can view landing page and interact with home buttons
-as a user, I can check shopping cart for saved items in dialog box
+as a user, I can check shopping cart for saved items in another activity
 as a user, I can navigate to an activity of a type of item
-as a user, I can view a history of purchased items
+as a user, I can view a history of purchased items: bonus (with last 10 items)
 
 2.
 A singleton class must be made that contains both the array of available 
@@ -164,18 +164,26 @@ user can add to shopping cart, if singleton instance exists
 user can delete from shopping cart, if arraylist in singleton != null
 
 User Story 2: The user can interact with shopping cart
-as a user, I can buy an item and have it added to the shopping cart
-as a user, I can delete an item from inside the shopping cart
-as a user, I ccan empty the entire shopping cart at once by deletion
-as a user, I can empty the entire shopping cart at once by buying them all
-as a user, I can buy a single item in the shopping cart
+As a user, I can buy an item and have it added to the shopping cart
+As a user, I can delete an item from inside the shopping cart
+As a user, I ccan empty the entire shopping cart at once by deletion
+As a user, I can empty the entire shopping cart at once by buying them all
+As a user, I can buy a single item in the shopping cart
 
 3.
-The user must be able to search in both the list activity and the items activities
+The user will be presented with a tab layout with dedicated values and
+must be able to search in each one.
 
 Test:
-user can search for items if items array list > 0
-user can search for items with any symbol without breaking the code
+As a user, I can search for items even if items array Recycler View > 0
+As a user, I can search for items with any symbol without breaking the code
+As a user, I can see the search results in the frame layout
 
-User Story 3: The user can search for items
-as a user, I can search for items or lists of items
+4.
+User can interact with Recycler view item
+
+Test:
+As a user, I can click on an item and view it's contents in a dedicated activity
+As a user, I can add said item to the shopping cart
+As a user, as a user I will see said item in the shopping cart on purchase button click 
+
