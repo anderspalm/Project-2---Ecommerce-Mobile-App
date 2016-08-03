@@ -34,6 +34,9 @@ public class ShopCartCursorAdapter extends CursorAdapter {
 
         while (cursor.moveToNext()) {
 
+             /* To put the following nine lines into three separate AsyncTasks would make the
+                does not save that much latency, so is it really still best practice to put it in the
+                Async Tasks structure? */
             TextView textName = (TextView) view.findViewById(R.id.cart_item_name);
             textName.setText(cursor.getString(cursor.getColumnIndex(DBHelper.ITEM_NAME)));
 

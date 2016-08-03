@@ -3,6 +3,8 @@ package com.example.ander.shoppingcart;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,23 +86,22 @@ public class SQLRecycleAdapter extends RecyclerView.Adapter<RecViewHolder> {
                 Toast.makeText(view.getContext(), "Added " + finalName + " to cart", Toast.LENGTH_SHORT).show();
 
                 if ((finalName != null) && (finalDescription != null) && (finalPrice != null)) {
-                    DBHelper.getInstance(view.getContext()).addItemsFromClick(finalName, finalDescription, finalPrice);
+//                    DBHelper.getInstance(view.getContext()).addItemsFromClick(finalName, finalDescription, finalPrice);
+                    MainActivity mainActivity = new MainActivity();
+                    mainActivity.addItemsFromListAsyncTask(finalName,finalDescription,finalPrice);
                 }
             }
         });
-
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(view.getContext(), "" + finalName, Toast.LENGTH_SHORT).show();
-
                 Intent intent = new Intent(view.getContext(), ItemDisplayActivity.class);
                 intent.putExtra("name_key", finalName);
                 intent.putExtra("desc_key", finalDescription);
                 intent.putExtra("price_key", finalPrice);
                 view.getContext().startActivity(intent);
-
             }
         });
     }

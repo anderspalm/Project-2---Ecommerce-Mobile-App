@@ -124,6 +124,30 @@ public class DBHelper extends SQLiteOpenHelper {
                 "('5 Something Park', '1 bedroom home with garden','1500', 'Chelsea')");
     }
 
+    public void addItemstoFirstPagerAdapter(String name, String description, String price, String placer) {
+        SQLiteDatabase db = getWritableDatabase();
+        String name2 = "'" + name + "'";
+        String description2 = "'" + description + "'";
+        String price2 = "'" + price + "'";
+        String placer2 = "'" + price + "'";
+
+        db.execSQL("INSERT INTO " + ITEM_TABLE + "(" + ITEM_NAME + ", " +
+                ITEM_DESCRIPTION + ", " +
+                ITEM_PRICE + ", " +
+                ITEM_AREA + ")" +
+                " VALUES " + "( " + name2 + ", " + description2 + ", " + price2 + ", " + placer2 +" )");
+        db.close();
+    }
+
+    public void insertRow(ItemObject itemObject) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(ITEM_NAME, itemObject.getmName());
+        values.put(ITEM_DESCRIPTION, itemObject.getmDescription());
+        values.put(ITEM_PRICE, itemObject.getmPrice());
+        values.put(ITEM_AREA, itemObject.getmArea());
+        db.insertOrThrow(ITEM_TABLE, null, values);
+    }
 
     //    *******************************************
 

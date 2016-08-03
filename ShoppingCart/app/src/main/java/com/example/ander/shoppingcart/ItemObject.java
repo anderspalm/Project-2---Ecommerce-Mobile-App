@@ -10,12 +10,28 @@ public class ItemObject {
 
     private String mName;
     private String mDescription;
+    private String mArea;
     private float mPrice;
+
+    public ItemObject(String name, String description, float price, String area) {
+        mName = name;
+        mDescription = description;
+        mPrice = price;
+        mArea = area;
+    }
 
     public ItemObject(String name, String description, float price) {
         mName = name;
         mDescription = description;
         mPrice = price;
+    }
+
+    public String getmArea() {
+        return mArea;
+    }
+
+    public void setmArea(String mArea) {
+        this.mArea = mArea;
     }
 
     public String getmName() {
