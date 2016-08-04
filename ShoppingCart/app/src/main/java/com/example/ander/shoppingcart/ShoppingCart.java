@@ -31,7 +31,7 @@ public class ShoppingCart extends AppCompatActivity {
     ListView mlistView;
     Context mContext;
     AsyncTask<Cursor, Integer, Cursor> mRepopulationtask;
-    AsyncTask<Void,Void,Void> mAddingTask;
+    AsyncTask<Void, Void, Void> mAddingTask;
 //    public Button mItemPurchaseButton;
 
     @Override
@@ -86,7 +86,7 @@ public class ShoppingCart extends AppCompatActivity {
                         Toast.makeText(ShoppingCart.this, "Congratulations, you just bought a " + finalName, Toast.LENGTH_SHORT).show();
                         // adding item to the purchased table
                         if ((finalName != null) && (finalDescription != null) && (finalPrice != null)) {
-                            addPurchasedItemToASyncTask(finalName,finalDescription,finalPrice);
+                            addPurchasedItemToASyncTask(finalName, finalDescription, finalPrice);
                         }
                         // removing the item
                         removeItem(itemId);
@@ -94,8 +94,9 @@ public class ShoppingCart extends AppCompatActivity {
 
                         // next two lines are to use the AsyncTask
                         // using the Async task seems to refresh to a blank adapter screen
-                        changeCursor(repopulationToASyncTask());
-                        notifyDataSetChanged();
+//                        changeCursor(repopulationToASyncTask());
+                        repopulationToASyncTask();
+//                        notifyDataSetChanged();
                         /* notifyDSChanged seems to not work anymore for cursors
                            Answer: The changeCursor swaps the old adapter for a new one, when called.
                         */
@@ -146,12 +147,64 @@ public class ShoppingCart extends AppCompatActivity {
             protected Cursor doInBackground(Cursor... params) {
                 return db.getAllCartItems();
                 // question ... why is this command now deleting every item in the 'Cart Table'?
-                        // if I uncomment the changeCursor(db.getAllCartItems()); line it works
+                // if I uncomment the changeCursor(db.getAllCartItems()); line it works
             }
 
             @Override
-            protected void onPostExecute(Cursor object) {
-                super.onPostExecute(object);
+            protected void onPostExecute(Cursor cursor) {
+                super.onPostExecute(cursor);
+                CursorAdapter cursorAdapter = new CursorAdapter(ShoppingCart.this, cursor, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER) {
+                    @Override
+                    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+                        return LayoutInflater.from(context).inflate(R.layout.shopping_cart_items, parent, false);
+                    }
+
+                    @Override
+                    public void bindView(View view, Context context, final Cursor cursor) {
+                        TextView textName = (TextView) view.findViewById(R.id.cart_item_name);
+                        TextView textDesc = (TextView) view.findViewById(R.id.cart_item_description);
+                        TextView textPrice = (TextView) view.findViewById(R.id.cart_item_price);
+
+                    /* To put the following three lines into three separate AsyncTasks would make the
+                    does not save that much latency, so is it really still best practice to put it in the
+                    Async Tasks structure? */
+
+                        textName.setText(cursor.getString(cursor.getColumnIndex(DBHelper.CART_NAME)));
+                        textDesc.setText(cursor.getString(cursor.getColumnIndex(DBHelper.CART_DESCRIPTION)));
+                        textPrice.setText(cursor.getString(cursor.getColumnIndex(DBHelper.CART_PRICE)));
+
+                        final String finalName = cursor.getString(cursor.getColumnIndex(DBHelper.CART_NAME));
+                        final String finalDescription = cursor.getString(cursor.getColumnIndex(DBHelper.CART_DESCRIPTION));
+                        final String finalPrice = cursor.getString(cursor.getColumnIndex(DBHelper.CART_PRICE));
+
+                        final String itemId = cursor.getString(cursor.getColumnIndex(DBHelper.CART_ID));
+
+                        Button mItemPurchaseButton = (Button) view.findViewById(R.id.item_purchase_button);
+
+                        mItemPurchaseButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Toast.makeText(ShoppingCart.this, "Congratulations, you just bought a " + finalName, Toast.LENGTH_SHORT).show();
+                                // adding item to the purchased table
+                                if ((finalName != null) && (finalDescription != null) && (finalPrice != null)) {
+                                    addPurchasedItemToASyncTask(finalName, finalDescription, finalPrice);
+                                }
+                                // removing the item
+                                removeItem(itemId);
+                                DBHelper db = DBHelper.getInstance(ShoppingCart.this);
+
+                                // next two lines are to use the AsyncTask
+                                // using the Async task seems to refresh to a blank adapter screen
+                                changeCursor(db.getAllCartItems());
+//                                notifyDataSetChanged();
+                            /* notifyDSChanged seems to not work anymore for cursors
+                               Answer: The changeCursor swaps the old adapter for a new one, when called.
+                            */
+                            }
+                        });
+                    }
+                };
+                mlistView.setAdapter(cursorAdapter);
             }
         };
         mRepopulationtask.execute();

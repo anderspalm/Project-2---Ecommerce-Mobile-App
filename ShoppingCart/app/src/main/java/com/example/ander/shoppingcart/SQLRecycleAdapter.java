@@ -86,7 +86,6 @@ public class SQLRecycleAdapter extends RecyclerView.Adapter<RecViewHolder> {
                 Toast.makeText(view.getContext(), "Added " + finalName + " to cart", Toast.LENGTH_SHORT).show();
 
                 if ((finalName != null) && (finalDescription != null) && (finalPrice != null)) {
-//                    DBHelper.getInstance(view.getContext()).addItemsFromClick(finalName, finalDescription, finalPrice);
                     MainActivity mainActivity = new MainActivity();
                     mainActivity.addItemsFromListAsyncTask(finalName,finalDescription,finalPrice);
                 }

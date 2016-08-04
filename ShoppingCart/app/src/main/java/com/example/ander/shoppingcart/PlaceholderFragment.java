@@ -62,99 +62,95 @@ public class PlaceholderFragment extends Fragment {
 
         mContext = this.getActivity();
 
+        mProgressBar = (ProgressBar) view.findViewById(R.id.progress);
+
         DBHelper dbHelper = DBHelper.getInstance(mContext);
         switch (tab_number) {
             case 0:
-//                madapter = new SQLRecycleAdapter(addASyncDatabase(0), R.layout.recycle_view_items);
-                // when I attempt to use the AsyncTask here it thinks the database is empty
-                madapter = new SQLRecycleAdapter(dbHelper.getChelseaRentals(), R.layout.recycle_view_items);
-                mRecyclerView.setAdapter(madapter);
+                addASyncDatabase(0);
                 break;
             case 1:
-//                madapter = new SQLRecycleAdapter(addASyncDatabase(1), R.layout.recycle_view_items);
-                madapter = new SQLRecycleAdapter(dbHelper.getChelseaRentals(), R.layout.recycle_view_items);
-                mRecyclerView.setAdapter(madapter);
+                addASyncDatabase(1);
                 break;
             case 2:
-//                madapter = new SQLRecycleAdapter(addASyncDatabase(2), R.layout.recycle_view_items);
-                madapter = new SQLRecycleAdapter(dbHelper.getFulhamRentals(), R.layout.recycle_view_items);
-                mRecyclerView.setAdapter(madapter);
+                addASyncDatabase(2);
                 break;
             default:
-//                madapter = new SQLRecycleAdapter(addASyncDatabase(3), R.layout.recycle_view_items);
-                madapter = new SQLRecycleAdapter(dbHelper.getFruit(), R.layout.recycle_view_items);
-                mRecyclerView.setAdapter(madapter);
+                addASyncDatabase(3);
+//                The next two lines are what I had prior to the AsyncTask
+//                madapter = new SQLRecycleAdapter(dbHelper.getAccessories(), R.layout.recycle_view_items);
+//                mRecyclerView.setAdapter(madapter);
         }
         return view;
     }
 
-//    private List<ItemObject> addASyncDatabase(final int num){
-//        mtask = new AsyncTask<List<ItemObject>, Integer, List<ItemObject>>() {
-//            DBHelper db = DBHelper.getInstance(mContext);
-//
-//            @Override
-//            protected void onPreExecute() {
-//                super.onPreExecute();
-//                Toast.makeText(mContext, "Loading items", Toast.LENGTH_LONG).show();
-//            }
-//
-//            @Override
-//            protected List<ItemObject> doInBackground(List<ItemObject>... params) {
-//
-//                for(int i=0; i < 15; i ++) {
-//                    ItemObject itemObjectBa = new ItemObject("a name" + i, "a description" + i,  i + 1, "Battersea");
-//                    ItemObject itemObjectCh = new ItemObject("a name" + i, "a description" + i,  i + 1, "Chelsea");
-//                    ItemObject itemObjectFu = new ItemObject("a name" + i, "a description" + i,  i + 1, "Fulham");
-//                    ItemObject itemObjectFr = new ItemObject("a name" + i, "a description" + i,  i + 1, "Fruit");
-//                    db.insertRow(itemObjectBa);
-//                    db.insertRow(itemObjectCh);
-//                    db.insertRow(itemObjectFu);
-//                    db.insertRow(itemObjectFr);
-//                }
-//
-//                if (num == 0) {
-//                    return DBHelper.getInstance(getContext()).getBatterseaRentals();
-//                }
-//                else if (num == 1) {
-//                    return DBHelper.getInstance(getContext()).getChelseaRentals();
-//                }
-//
-//                else if (num == 2) {
-//                    return DBHelper.getInstance(getContext()).getFulhamRentals();
-//                }
-//                else {
-//                    ArrayList<ItemObject> temp = new ArrayList<>();
-//                    return DBHelper.getInstance(getContext()).getFruit();
-//                }
-//            }
-//
-//            @Override
-//            protected void onPostExecute(List<ItemObject> object) {
-//                super.onPostExecute(object);
-//            }
-//        };
-//        mtask.execute();
-//        return null;
-//    }
+    private ArrayList<ItemObject> addASyncDatabase(final int num) {
+        mtask = new AsyncTask<List<ItemObject>, Integer, List<ItemObject>>() {
+            DBHelper db = DBHelper.getInstance(mContext);
 
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                Toast.makeText(mContext, "Loading items", Toast.LENGTH_LONG).show();
+//                mProgressBar.setVisibility(View.VISIBLE);
+            }
+
+//            @Override
+//            protected void onProgressUpdate(Integer... values) {
+//                super.onProgressUpdate(values);
+////                mProgressBar.setProgress(values[0]);
+//            }
+
+            @Override
+            protected List<ItemObject> doInBackground(List<ItemObject>... params) {
+                if (num == 0) {
+                    return DBHelper.getInstance(getContext()).getComputers();
+                } else if (num == 1) {
+                    return DBHelper.getInstance(getContext()).getConsoles();
+                } else if (num == 2) {
+                    return DBHelper.getInstance(getContext()).getTelevisions();
+                } else if (num == 3){
+                    return DBHelper.getInstance(getContext()).getAccessories();
+//                    List object = DBHelper.getInstance(getContext()).getComputers();
+//                    Integer progressVal = object.size();
+//                    for (int j = 0; j < progressVal; j++) {
+//                        publishProgress(progressVal);
+//                    }
+//                    return object;
+                }
+                else {
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(List<ItemObject> object) {
+                super.onPostExecute(object);
+
+                madapter = new SQLRecycleAdapter(object, R.layout.recycle_view_items);
+                mRecyclerView.setAdapter(madapter);
+            }
+        };
+        mtask.execute();
+        return null;
+    }
 
 
     public void getQuery(String query, int position) {
         DBHelper dbHelper = DBHelper.getInstance(mContext);
 
-
         switch (tab_number) {
             case 0:
-                madapter.updateRecViewItems(dbHelper.batterseaQuerySearch(query));
+                madapter.updateRecViewItems(dbHelper.computerQuerySearch(query));
                 break;
             case 1:
-                madapter.updateRecViewItems(dbHelper.chelseaQuerySearch(query));
+                madapter.updateRecViewItems(dbHelper.consolesQuerySearch(query));
                 break;
             case 2:
-                madapter.updateRecViewItems(dbHelper.fulhamQuerySearch(query));
+                madapter.updateRecViewItems(dbHelper.televisionQuerySearch(query));
                 break;
             default:
-                madapter.updateRecViewItems(dbHelper.fruitQuerySearch(query));
+                madapter.updateRecViewItems(dbHelper.accessoriesQuerySearch(query));
         }
     }
 

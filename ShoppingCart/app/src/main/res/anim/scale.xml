@@ -8,4 +8,13 @@
         android:fromYScale="0.0"
         android:toXScale="-0.1"
         android:toYScale="-0.1"  />
+    <scale
+        android:interpolator="@android:anim/accelerate_interpolator"
+        android:startOffset="20"
+        android:duration="20"
+        android:fillAfter="true"
+        android:fromXScale="-0.1"
+        android:fromYScale="-0.1"
+        android:toXScale="0"
+        android:toYScale="0"  />
 </set>

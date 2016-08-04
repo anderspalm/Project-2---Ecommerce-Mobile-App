@@ -41,13 +41,13 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         switch (position) {
             default:
             case 0:
-                return "Battersea";
+                return "Computers";
             case 1:
-                return "Chelsea";
+                return "Consoles";
             case 2:
-                return "Fulham";
+                return "Televisions";
             case 3:
-                return "Fruit";
+                return "Accessories";
         }
     }
 

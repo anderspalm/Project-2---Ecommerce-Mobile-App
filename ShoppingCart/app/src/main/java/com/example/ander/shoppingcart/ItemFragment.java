@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by ander on 7/25/2016.
  */
-public class ItemFragment extends Fragment{
+public class ItemFragment extends Fragment implements View.OnClickListener{
 
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
@@ -45,6 +45,7 @@ public class ItemFragment extends Fragment{
         super.onViewCreated(view, savedInstanceState);
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager(), mItemListener);
+        mTabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
 
@@ -59,5 +60,8 @@ public class ItemFragment extends Fragment{
     }
 
 
+    @Override
+    public void onClick(View view) {
 
+    }
 }

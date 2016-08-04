@@ -17,6 +17,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements PlaceholderFragme
     ImageView mCartButton;
     AsyncTask<List<ItemObject>, Integer, List<ItemObject>> mtask;
     AsyncTask<Void,Void,Void> mAddingTask;
+    public Animation animation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements PlaceholderFragme
             @Override
             public void onClick(View view) {
                 Log.d("MainActivity", "onClick: FAB clicked");
+                animation = AnimationUtils.loadAnimation(view.getContext(), R.anim.scale);
+                view.startAnimation(animation);
 //                Toast.makeText(view.getContext(), "To the cart! " , Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, ShoppingCart.class);
                 startActivity(intent);
@@ -65,14 +70,14 @@ public class MainActivity extends AppCompatActivity implements PlaceholderFragme
             protected List<ItemObject> doInBackground(List<ItemObject>... params) {
                 DBHelper db = DBHelper.getInstance(MainActivity.this);
                 for(int i=0; i < 15; i ++) {
-                    ItemObject itemObjectBa = new ItemObject("a name" + i, "a description" + i,  i + 1, "Battersea");
-                    ItemObject itemObjectCh = new ItemObject("a name" + i, "a description" + i,  i + 1, "Chelsea");
-                    ItemObject itemObjectFu = new ItemObject("a name" + i, "a description" + i,  i + 1, "Fulham");
-                    ItemObject itemObjectFr = new ItemObject("a name" + i, "a description" + i,  i + 1, "Fruit");
-                    db.insertRow(itemObjectBa);
-                    db.insertRow(itemObjectCh);
-                    db.insertRow(itemObjectFu);
-                    db.insertRow(itemObjectFr);
+                    ItemObject itemObjectCom = new ItemObject("Computer" + i, "description " + i,  i + 1, "Computers");
+                    ItemObject itemObjectCon = new ItemObject("Console " + i, "description " + i,  i + 1, "Consoles");
+                    ItemObject itemObjectTv = new ItemObject("Television " + i, "description " + i,  i + 1, "Televisions");
+                    ItemObject itemObjectAc = new ItemObject("Accessory " + i, "description " + i,  i + 1, "Accessories");
+                    db.insertRow(itemObjectCom);
+                    db.insertRow(itemObjectCon);
+                    db.insertRow(itemObjectTv);
+                    db.insertRow(itemObjectAc);
                 }
                 return null;
             }
